@@ -65,7 +65,7 @@ x = [[Buying.Med.value,
 	  LugBoot.Big.value,
 	  Safety.Big.value]];
 
-print(x);	
+print(x);
 
 # execute predictio from loaded model
 res = loaded_model.predict(x);
