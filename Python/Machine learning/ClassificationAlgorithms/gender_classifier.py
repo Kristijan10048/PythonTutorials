@@ -51,7 +51,7 @@ def RandomForestClassifierMethod():
 	print("------------------------------------------");
 	PrintAlgoName("RandomForestClassifierMethod");
 	StopwatchStart();
-	rfc_clf = RandomForestClassifier();
+	rfc_clf = RandomForestClassifier(n_estimators  = 150 );
 
 	rfc_clf.fit(X, Y);
 
@@ -67,7 +67,7 @@ def LogisticRegressionClassifier():
 	PrintAlgoName("LogisticRegressionClassifier");
 	StopwatchStart();
 	
-	l_clf = LogisticRegression();
+	l_clf = LogisticRegression(solver = "lbfgs");
 	l_clf.fit(X,Y);
 	
 	l_prediction = l_clf.predict(test_data);		
