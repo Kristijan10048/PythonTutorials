@@ -1,0 +1,3 @@
+[submodule "FastAi"]
+	path = FastAi
+	url = ../../fastai/fastai.git
