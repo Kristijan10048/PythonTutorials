@@ -7,7 +7,7 @@ import logging
 from typing import Dict
 import os
 import argparse
-
+from bs4 import BeautifulSoup
 
 def log_info(msg: str):
     logger.info(msg)
@@ -125,7 +125,30 @@ def load_and_process_files_threaded(s_path: str, s_file_ext: str, thread_id: int
     log_info("THREAD {} : Run time: {} seconds".format(thread_id, exec_time.total_seconds()))
 
 
+def parse_html_gallery():
+    # Importing BeautifulSoup class from the bs4 module
 
+    # Opening the html file
+    html_file = open(r'D:\Repository\PythonTutorials\Python\CheckDuplicates\google-image-layout\template.html', "r")
+
+    # Reading the file
+    index = html_file.read()
+
+    # Creating a BeautifulSoup object and specifying the parser
+    o_soup = BeautifulSoup(index, 'html.parser')
+
+    # Using the prettify method
+    #print(o_soup.prettify())
+
+    for tag in o_soup.find_all('div'):
+        # Printing the name, and text of p tag
+        print(f'{tag.name}: {tag.text}')
+        if(tag.get('id') == 'imgs'):
+            new_img = o_soup.new_tag('img', src=r'Z:\kris\Photos\Cannon backup\back up\170_2508\IMG_2761.JPG', width=300, height=300)
+            tag.append(new_img)
+
+    with open("output1.html", "w") as file:
+        file.write(str(o_soup))
 
 if __name__ == "__main__":
     # script arguments
@@ -147,11 +170,14 @@ if __name__ == "__main__":
         t2 = threading.Thread(target=load_and_process_files_threaded, args=(my_path, '*.mp4', 2))
         t2.start()
 
-        #all done
+        # all done
+        exit(0)
+    elif args.gen_html:
+        parse_html_gallery()
         exit(0)
     else:
         load_and_process_files_threaded(my_path, '*.*', 1)
         exit(0)
-    if args.gen_html:
+
 
 
