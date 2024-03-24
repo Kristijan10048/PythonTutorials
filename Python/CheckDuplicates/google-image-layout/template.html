@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset='utf-8'>
+		<meta http-equiv="X-UA-Compatible" content="chrome=1">
+		<meta name="description" content="Google-image-layout : A library help you to build Google like Image Gallery">
+
+		<link rel="stylesheet" type="text/	css" media="screen" href="stylesheets/stylesheet.css">
+
+		<title>Google-image-layout</title>
+	</head>
+	<body>
+		<!-- MAIN CONTENT -->
+		<div id="main_content_wrap" class="outer">
+			<section id="main_content" class="inner">	
+				<h4>A sample gallery</h4>
+				<div id="imgs" class="google-image-layout" data-google-image-layout data-max-height="350">
+					
+				</div>			
+			</section>
+		</div>
+
+		<script src="javascripts/imagesloaded.pkgd.min.js"></script>
+		<script src="src/google-image-layout.js"></script>
+		<script src="javascripts/main.js"></script>
+
+		<script type="text/javascript">
+			var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+			document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+		</script>
+		<script type="text/javascript">
+			try {
+				var pageTracker = _gat._getTracker("UA-54605887-1");
+			pageTracker._trackPageview();
+			} catch(err) {}
+		</script>
+	</body>
+</html>
