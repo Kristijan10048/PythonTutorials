@@ -13,13 +13,13 @@ from bs4 import BeautifulSoup
 import dupl_logger as d_log
 
 
-def get_file_size(file_path: str):
+def get_file_size(file_path: str) -> float:
     file_stats = os.stat(file_path)
     # print(f'File Size in MegaBytes is {file_stats.st_size / (1024 * 1024)}')
     return round(file_stats.st_size / (1024 * 1024), 1)
 
 
-def calculate_file_md5(file_path: str) -> object:
+def calculate_file_md5(file_path: str) -> str:
     try:
         with open(file_path, 'rb') as file_to_check:
             # read contents of the file
@@ -49,7 +49,7 @@ def write_to_txt_file(s_file_name: str, lst_data: list, dict_data: dict = None) 
 
 def load_and_process_files_threaded(s_path: str, s_file_ext: str, thread_id: int):
     print('s_path' + s_path)
-    all_files = glob.glob(s_path + '/**/'+s_file_ext, recursive=True)
+    all_files = glob.glob(s_path + '/**/' + s_file_ext, recursive=True)
 
     i_files_cnt = len(all_files)
     if i_files_cnt <= 0:
@@ -98,7 +98,7 @@ def load_and_process_files_threaded(s_path: str, s_file_ext: str, thread_id: int
     uniqFilesCnt = len(uniqFiles)
 
     # threaded write to log files
-    duplicates_files_log = os.path.join(s_path,  'duplicates-' + str(thread_id) + '.log')
+    duplicates_files_log = os.path.join(s_path, 'duplicates-' + str(thread_id) + '.log')
     unique_files_log = os.path.join(s_path, 'unique-' + str(thread_id) + '.log')
 
     tt1 = threading.Thread(target=write_to_txt_file, args=(duplicates_files_log, duplFiles, None))
@@ -127,7 +127,6 @@ def write_html_file(s_path: str, o_soup: object):
 
 
 def parse_html_gallery():
-
     # Opening the html file
     html_file = open(r'D:\Repository\PythonTutorials\Python\CheckDuplicates\google-image-layout\template.html', "r")
 
@@ -140,13 +139,13 @@ def parse_html_gallery():
     for tag in o_soup.find_all('div'):
         # Printing the name, and text of p tag
         # print(f'{tag.name}: {tag.text}')
-        if(tag.get('id') == 'imgs'):
-            new_img = o_soup.new_tag('img', src=r'Z:\kris\Photos\Cannon backup\back up\170_2508\IMG_2761.JPG', width=300, height=300)
+        if (tag.get('id') == 'imgs'):
+            new_img = o_soup.new_tag('img', src=r'Z:\kris\Photos\Cannon backup\back up\170_2508\IMG_2761.JPG',
+                                     width=300, height=300)
             tag.append(new_img)
 
     # write modified template to a file
     write_html_file(s_path='.', o_soup=o_soup)
-
 
 
 if __name__ == "__main__":
@@ -177,6 +176,3 @@ if __name__ == "__main__":
     else:
         load_and_process_files_threaded(my_path, '*.*', 1)
         exit(0)
-
-
-
