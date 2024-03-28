@@ -1,5 +1,4 @@
 import datetime
-from asyncio.log import logger
 import glob
 import hashlib
 import threading
@@ -7,14 +6,11 @@ import logging
 from typing import Dict
 import os
 import argparse
+# Importing BeautifulSoup class from the bs4 module
 from bs4 import BeautifulSoup
 
-def log_info(msg: str):
-    logger.info(msg)
-
-
-def log_error(msg: str):
-    logger.error(msg)
+# custom logger for this project
+import dupl_logger as d_log
 
 
 def get_file_size(file_path: str):
@@ -31,8 +27,8 @@ def calculate_file_md5(file_path: str) -> object:
             # pipe contents of the file through
             return hashlib.md5(data).hexdigest()
     except Exception as e:
-        log_error(str(e))
-        log_error(file_path)
+        d_log.log_error(str(e))
+        d_log.log_error(file_path)
 
 
 def write_to_txt_file(s_file_name: str, lst_data: list, dict_data: dict = None) -> None:
@@ -46,9 +42,9 @@ def write_to_txt_file(s_file_name: str, lst_data: list, dict_data: dict = None) 
                 f.write(lstItem + '\n')
 
         f.close()
-        log_info("Done write to {}.".format(s_file_name))
+        d_log.log_info("Done write to {}.".format(s_file_name))
     except Exception as e:
-        log_error(str(e))
+        d_log.log_error(str(e))
 
 
 def load_and_process_files_threaded(s_path: str, s_file_ext: str, thread_id: int):
@@ -57,10 +53,10 @@ def load_and_process_files_threaded(s_path: str, s_file_ext: str, thread_id: int
 
     i_files_cnt = len(all_files)
     if i_files_cnt <= 0:
-        log_info('No files under {}'.format(s_path))
+        d_log.log_info('No files under {}'.format(s_path))
         return
     else:
-        log_info('Loaded {:d} files'.format(i_files_cnt))
+        d_log.log_info('Loaded {:d} files'.format(i_files_cnt))
 
     # init loop vars
     start_time = datetime.datetime.now()
@@ -88,10 +84,10 @@ def load_and_process_files_threaded(s_path: str, s_file_ext: str, thread_id: int
         # console progress bar
         if i % iProgressBarStep == 0:
             percent = int(round((i / allFilesCnt) * 100, 0))
-            log_info("THREAD {:d}: Complete: {:d}%. Unique files: {:d}. Duplicates: {:d}".format(
+            d_log.log_info("THREAD {:d}: Complete: {:d}%. Unique files: {:d}. Duplicates: {:d}".format(
                 thread_id, percent, len(uniqFiles), len(duplFiles)))
         elif i % 100 == 0:
-            log_info('Processed {}/{} files.'.format(i, i_files_cnt))
+            d_log.log_info('Processed {}/{} files.'.format(i, i_files_cnt))
 
         # write to file
         file_writer.write(currFile + '\n')
@@ -117,38 +113,41 @@ def load_and_process_files_threaded(s_path: str, s_file_ext: str, thread_id: int
     end_time = datetime.datetime.now()
     exec_time = end_time - start_time
 
-    log_info("THREAD {} : Done Listing".format(thread_id))
-    log_info("THREAD {} : Loaded {} files.".format(thread_id, allFilesCnt))
-    log_info("THREAD {} : Unique files: {}".format(thread_id, uniqFilesCnt))
-    log_info("THREAD {} : Duplicate files: {}".format(thread_id, duplFilesCnt))
-    log_info("THREAD {} : Check: {}".format(thread_id, allFilesCnt - (uniqFilesCnt + duplFilesCnt)))
-    log_info("THREAD {} : Run time: {} seconds".format(thread_id, exec_time.total_seconds()))
+    d_log.log_info("THREAD {} : Done Listing".format(thread_id))
+    d_log.log_info("THREAD {} : Loaded {} files.".format(thread_id, allFilesCnt))
+    d_log.log_info("THREAD {} : Unique files: {}".format(thread_id, uniqFilesCnt))
+    d_log.log_info("THREAD {} : Duplicate files: {}".format(thread_id, duplFilesCnt))
+    d_log.log_info("THREAD {} : Check: {}".format(thread_id, allFilesCnt - (uniqFilesCnt + duplFilesCnt)))
+    d_log.log_info("THREAD {} : Run time: {} seconds".format(thread_id, exec_time.total_seconds()))
+
+
+def write_html_file(s_path: str, o_soup: object):
+    with open("output1.html", "w") as file:
+        file.write(str(o_soup))
 
 
 def parse_html_gallery():
-    # Importing BeautifulSoup class from the bs4 module
 
     # Opening the html file
     html_file = open(r'D:\Repository\PythonTutorials\Python\CheckDuplicates\google-image-layout\template.html', "r")
 
     # Reading the file
-    index = html_file.read()
+    html_template = html_file.read()
 
     # Creating a BeautifulSoup object and specifying the parser
-    o_soup = BeautifulSoup(index, 'html.parser')
-
-    # Using the prettify method
-    #print(o_soup.prettify())
+    o_soup = BeautifulSoup(html_template, 'html.parser')
 
     for tag in o_soup.find_all('div'):
         # Printing the name, and text of p tag
-        print(f'{tag.name}: {tag.text}')
+        # print(f'{tag.name}: {tag.text}')
         if(tag.get('id') == 'imgs'):
             new_img = o_soup.new_tag('img', src=r'Z:\kris\Photos\Cannon backup\back up\170_2508\IMG_2761.JPG', width=300, height=300)
             tag.append(new_img)
 
-    with open("output1.html", "w") as file:
-        file.write(str(o_soup))
+    # write modified template to a file
+    write_html_file(s_path='.', o_soup=o_soup)
+
+
 
 if __name__ == "__main__":
     # script arguments
