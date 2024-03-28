@@ -6,10 +6,10 @@ import logging
 from typing import Dict
 import os
 import argparse
-
-
 # custom logger for this project
 import dupl_logger as d_log
+# static html gallery generator
+import dupl_gallery_generator as dupl_html_gen
 
 
 def get_file_size(file_path: str) -> float:
@@ -148,7 +148,12 @@ if __name__ == "__main__":
         # all done
         exit(0)
     elif args.gen_html:
-        parse_html_gallery()
+        # create object
+        o_html_gen = dupl_html_gen.CAppHtmlGallery()
+
+        # generate html gallery
+        # TODO pass path
+        o_html_gen.parse_html_gallery()
         exit(0)
     else:
         load_and_process_files_threaded(my_path, '*.*', 1)
